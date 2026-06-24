@@ -17,11 +17,10 @@
   }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; font-size: 16px; line-height: 1.6; -webkit-text-size-adjust: 100%; }
   .wrapper { max-width: 660px; margin: 0 auto; }
-  .header { margin-bottom: 2rem; }
-  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-  .logo-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--pink-bg); border: 1.5px solid var(--pink-border); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .header { margin-bottom: 2rem; text-align: center; }
+  .logo-img { height: 48px; width: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
   .header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
-  .header p { font-size: 14px; color: var(--text2); }
+  .header p { font-size: 14px; color: var(--text2); margin-top: 4px; }
   .card { background: var(--surface); border: 1px solid rgba(0,0,0,0.10); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 14px; }
   .section-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
   .tasas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
@@ -59,10 +58,8 @@
 <body>
 <div class="wrapper">
   <div class="header">
-    <div class="header-top">
-      <div class="logo-dot">🌸</div>
-      <h1>Diferencial cambiario</h1>
-    </div>
+    <img src="logo.png" alt="Cosmopolipam" class="logo-img" />
+    <h1>Diferencial cambiario</h1>
     <p>Calcula el precio BCV estimado por ítem para mantener el mismo margen de ganancia.</p>
   </div>
   <div class="card">
@@ -105,7 +102,7 @@
       <div class="metric"><div class="m-label">Total BCV</div><div class="m-val" id="total-bcv">$0.00</div></div>
     </div>
   </div>
-  <p class="footer">Calculadora para uso interno · <span>Cosmopolipam</span></p>
+  <p class="footer">Herramienta creada por <span>Cosmopolipam</span></p>
 </div>
 <script>
   var prendas = [];
