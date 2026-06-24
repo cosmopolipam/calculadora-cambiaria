@@ -63,7 +63,7 @@
       <div class="logo-dot">🌸</div>
       <h1>Diferencial cambiario</h1>
     </div>
-    <p>Calcula el precio BCV estimado por prenda para mantener el mismo margen de ganancia.</p>
+    <p>Calcula el precio BCV estimado por ítem para mantener el mismo margen de ganancia.</p>
   </div>
   <div class="card">
     <p class="section-label">Tasas de cambio</p>
@@ -85,10 +85,10 @@
   </div>
   <div class="card">
     <div class="prendas-header">
-      <span>Prendas</span>
+      <span>Ítems</span>
       <button class="btn-add" onclick="agregarPrenda()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Agregar prenda
+        Agregar ítem
       </button>
     </div>
     <div class="col-headers">
@@ -100,7 +100,7 @@
     <div id="lista-prendas"></div>
     <hr class="divider" />
     <div class="resumen-grid">
-      <div class="metric"><div class="m-label">Prendas</div><div class="m-val" id="total-items">0</div></div>
+      <div class="metric"><div class="m-label">Ítems</div><div class="m-val" id="total-items">0</div></div>
       <div class="metric"><div class="m-label">Total $</div><div class="m-val" id="total-usd">$0.00</div></div>
       <div class="metric"><div class="m-label">Total BCV</div><div class="m-val" id="total-bcv">$0.00</div></div>
     </div>
@@ -108,10 +108,7 @@
   <p class="footer">Calculadora para uso interno · <span>Cosmopolipam</span></p>
 </div>
 <script>
-  var prendas = [
-    { nombre: 'Body', precio: 30 },
-    { nombre: 'Pantalón', precio: 45 }
-  ];
+  var prendas = [];
   function getTasas() {
     var td = parseFloat(document.getElementById('tasa-divisa').value) || 800;
     var tb = parseFloat(document.getElementById('tasa-bcv').value) || 617.64;
@@ -142,7 +139,7 @@
         var inputNombre = document.createElement('input');
         inputNombre.type = 'text';
         inputNombre.value = p.nombre;
-        inputNombre.placeholder = 'Ej. Blusa';
+        inputNombre.placeholder = 'Nombre del ítem';
         inputNombre.setAttribute('inputmode', 'text');
         inputNombre.setAttribute('autocomplete', 'off');
         inputNombre.setAttribute('autocorrect', 'off');
