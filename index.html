@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Calculadora Diferencial Cambiario</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafafa; --surface: #ffffff; --surface2: #f4f4f2;
+    --border: rgba(0,0,0,0.10); --border2: rgba(0,0,0,0.18);
+    --text: #1a1a1a; --text2: #6b6b68; --text3: #999994;
+    --pink: #d4537e; --pink-bg: #fbeaf0; --pink-border: #f4c0d1; --pink-text: #72243e;
+    --success-bg: #eaf3de; --success-text: #3b6d11;
+    --danger-bg: #fcebeb; --danger-text: #a32d2d;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; font-size: 16px; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+  .wrapper { max-width: 660px; margin: 0 auto; }
+  .header { margin-bottom: 2rem; }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .logo-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--pink-bg); border: 1.5px solid var(--pink-border); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .header p { font-size: 14px; color: var(--text2); }
+  .card { background: var(--surface); border: 1px solid rgba(0,0,0,0.10); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 14px; }
+  .section-label { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 14px; }
+  .tasas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  @media (max-width: 420px) { .tasas-grid { grid-template-columns: 1fr; } }
+  .input-group { display: flex; flex-direction: column; gap: 5px; }
+  .input-group label { font-size: 13px; color: var(--text2); font-weight: 500; }
+  input[type="text"], input[type="number"] { -webkit-appearance: none; appearance: none; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 16px; font-family: inherit; color: var(--text); background: #fff; width: 100%; outline: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px var(--pink-bg); }
+  .diff-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .diff-label { font-size: 14px; color: var(--text2); }
+  .diff-badge { font-size: 14px; font-weight: 600; padding: 4px 12px; border-radius: 999px; background: var(--pink-bg); color: var(--pink-text); border: 1px solid var(--pink-border); }
+  .diff-note { font-size: 13px; color: var(--text3); }
+  .prendas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .prendas-header span { font-size: 15px; font-weight: 500; }
+  .btn-add { display: flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 14px; font-family: inherit; cursor: pointer; color: var(--text); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .btn-add svg { width: 14px; height: 14px; }
+  .col-headers { display: grid; grid-template-columns: 2fr 1fr 1.1fr 40px; gap: 8px; margin-bottom: 6px; padding: 0 2px; }
+  .col-lbl { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  #lista-prendas { min-height: 10px; }
+  .prenda-row { display: grid; grid-template-columns: 2fr 1fr 1.1fr 40px; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .resultado-tag { font-size: 14px; font-weight: 600; color: var(--success-text); background: var(--success-bg); border-radius: var(--radius-sm); padding: 10px 9px; text-align: right; white-space: nowrap; }
+  .btn-del { background: transparent; border: none; cursor: pointer; color: var(--text3); border-radius: var(--radius-sm); padding: 8px; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; touch-action: manipulation; min-width: 40px; min-height: 40px; }
+  .btn-del svg { width: 16px; height: 16px; }
+  .divider { border: none; border-top: 1px solid rgba(0,0,0,0.08); margin: 14px 0; }
+  .resumen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .metric { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .metric .m-label { font-size: 11px; color: var(--text3); margin-bottom: 3px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .metric .m-val { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  .footer { text-align: center; font-size: 12px; color: var(--text3); margin-top: 1.5rem; }
+  .footer span { color: var(--pink); font-weight: 500; }
+  @media (max-width: 480px) { .col-headers { grid-template-columns: 1.6fr 0.9fr 1fr 40px; } .prenda-row { grid-template-columns: 1.6fr 0.9fr 1fr 40px; } .resultado-tag { font-size: 13px; padding: 10px 6px; } }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="header-top">
+      <div class="logo-dot">🌸</div>
+      <h1>Diferencial cambiario</h1>
+    </div>
+    <p>Calcula el precio BCV estimado por prenda para mantener el mismo margen de ganancia.</p>
+  </div>
+  <div class="card">
+    <p class="section-label">Tasas de cambio</p>
+    <div class="tasas-grid">
+      <div class="input-group">
+        <label for="tasa-divisa">Tasa divisa (Bs/$ efectivo)</label>
+        <input type="number" id="tasa-divisa" value="800" min="1" step="0.01" inputmode="decimal" />
+      </div>
+      <div class="input-group">
+        <label for="tasa-bcv">Tasa BCV (Bs/$)</label>
+        <input type="number" id="tasa-bcv" value="617.64" min="1" step="0.01" inputmode="decimal" />
+      </div>
+    </div>
+    <div class="diff-row">
+      <span class="diff-label">Diferencial:</span>
+      <span class="diff-badge" id="pct-diff">— %</span>
+      <span class="diff-note">sobre el precio en efectivo</span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="prendas-header">
+      <span>Prendas</span>
+      <button class="btn-add" onclick="agregarPrenda()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar prenda
+      </button>
+    </div>
+    <div class="col-headers">
+      <span class="col-lbl">Nombre</span>
+      <span class="col-lbl">Precio $</span>
+      <span class="col-lbl">BCV est.</span>
+      <span></span>
+    </div>
+    <div id="lista-prendas"></div>
+    <hr class="divider" />
+    <div class="resumen-grid">
+      <div class="metric"><div class="m-label">Prendas</div><div class="m-val" id="total-items">0</div></div>
+      <div class="metric"><div class="m-label">Total $</div><div class="m-val" id="total-usd">$0.00</div></div>
+      <div class="metric"><div class="m-label">Total BCV</div><div class="m-val" id="total-bcv">$0.00</div></div>
+    </div>
+  </div>
+  <p class="footer">Calculadora para uso interno · <span>Cosmopolipam</span></p>
+</div>
+<script>
+  var prendas = [
+    { nombre: 'Body', precio: 30 },
+    { nombre: 'Pantalón', precio: 45 }
+  ];
+  function getTasas() {
+    var td = parseFloat(document.getElementById('tasa-divisa').value) || 800;
+    var tb = parseFloat(document.getElementById('tasa-bcv').value) || 617.64;
+    return { td: td, tb: tb };
+  }
+  function calcBCV(precioUSD) {
+    var t = getTasas();
+    return precioUSD * (t.td / t.tb);
+  }
+  function actualizarDiff() {
+    var t = getTasas();
+    var d = (t.td / t.tb - 1) * 100;
+    document.getElementById('pct-diff').textContent = '+' + d.toFixed(2) + '%';
+    renderPrendas();
+  }
+  function renderPrendas() {
+    var contenedor = document.getElementById('lista-prendas');
+    contenedor.innerHTML = '';
+    var totalUSD = 0, totalBCV = 0;
+    for (var i = 0; i < prendas.length; i++) {
+      (function(idx) {
+        var p = prendas[idx];
+        var bcv = calcBCV(p.precio);
+        totalUSD += p.precio;
+        totalBCV += bcv;
+        var row = document.createElement('div');
+        row.className = 'prenda-row';
+        var inputNombre = document.createElement('input');
+        inputNombre.type = 'text';
+        inputNombre.value = p.nombre;
+        inputNombre.placeholder = 'Ej. Blusa';
+        inputNombre.setAttribute('inputmode', 'text');
+        inputNombre.setAttribute('autocomplete', 'off');
+        inputNombre.setAttribute('autocorrect', 'off');
+        inputNombre.setAttribute('spellcheck', 'false');
+        inputNombre.addEventListener('input', function() { prendas[idx].nombre = this.value; });
+        var inputPrecio = document.createElement('input');
+        inputPrecio.type = 'number';
+        inputPrecio.value = p.precio || '';
+        inputPrecio.min = '0';
+        inputPrecio.step = '0.5';
+        inputPrecio.placeholder = '0';
+        inputPrecio.setAttribute('inputmode', 'decimal');
+        inputPrecio.addEventListener('input', function() { prendas[idx].precio = parseFloat(this.value) || 0; renderPrendas(); });
+        var resTd = document.createElement('div');
+        resTd.className = 'resultado-tag';
+        resTd.textContent = '$' + bcv.toFixed(2);
+        var delBtn = document.createElement('button');
+        delBtn.className = 'btn-del';
+        delBtn.setAttribute('aria-label', 'Eliminar');
+        delBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+        delBtn.addEventListener('click', function() { prendas.splice(idx, 1); renderPrendas(); });
+        row.appendChild(inputNombre);
+        row.appendChild(inputPrecio);
+        row.appendChild(resTd);
+        row.appendChild(delBtn);
+        contenedor.appendChild(row);
+      })(i);
+    }
+    document.getElementById('total-items').textContent = prendas.length;
+    document.getElementById('total-usd').textContent = '$' + totalUSD.toFixed(2);
+    document.getElementById('total-bcv').textContent = '$' + totalBCV.toFixed(2);
+  }
+  function agregarPrenda() {
+    prendas.push({ nombre: '', precio: 0 });
+    renderPrendas();
+    var inputs = document.querySelectorAll('#lista-prendas .prenda-row input[type="text"]');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }
+  document.getElementById('tasa-divisa').addEventListener('input', actualizarDiff);
+  document.getElementById('tasa-bcv').addEventListener('input', actualizarDiff);
+  actualizarDiff();
+  renderPrendas();
+</script>
+</body>
+</html>
